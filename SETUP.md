@@ -29,3 +29,27 @@ git config --global user.email "visiont3lab@gmail.com"
 git push --set-upstream origin develop
 ```
 
+## Add script to automaticall start 
+
+```
+# https://www.shubhamdipt.com/blog/how-to-create-a-systemd-service-in-linux/
+cd cd /etc/systemd/system
+sudo vim jupyterlab.service
+
+# write inside 
+[Unit]
+Description=Jupyterlab development server
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/clara-train-examples
+ExecStart=/home/ubuntu/clara-train-examples/startup.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+sudo systemctl daemon-reload
+sudo systemctl start jupyterlab.service
+sudo systemctl enable jupyterlab.service
+```
