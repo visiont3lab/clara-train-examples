@@ -15,12 +15,13 @@ services:
     depends_on:
       - tritonserver
     ports:
-      - "3030:8888"  # Jupyter lab port
-      - "3031:5000"  # AIAA port
+      - "8888:8888"  # Jupyter lab port
+      - "5000:5000"  # AIAA port
     ipc: host
+    #network_mode: host
     volumes:
-      - /home/ubuntu/clara-train-examples/PyTorch/NoteBooks/:/claraDevDay/
-    command: "jupyter lab /claraDevDay --ip 0.0.0.0 --allow-root --no-browser --config /claraDevDay/scripts/jupyter_notebook_config.py"
+      - /home/ubuntu/clara-train-examples/PyTorch/NoteBooks:/claraDevDay/
+    command: "jupyter lab /claraDevDay --ip 0.0.0.0 --port 8888 --allow-root --no-browser --NotebookApp.token='' --config /claraDevDay/scripts/jupyter_notebook_config.py"
 #    command: tail -f /dev/null
 #    tty: true
 #############################################################
