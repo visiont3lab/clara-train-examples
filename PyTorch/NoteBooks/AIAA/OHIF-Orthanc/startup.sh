@@ -1,5 +1,5 @@
 #!/bin/bash
-
+  
 # SPDX-License-Identifier: Apache-2.0
 
 chmod 664 nginx/config/.htpasswd
@@ -10,7 +10,7 @@ echo -----------------------------
 #docker-compose build --no-cache
 sleep 2
 echo -----------------------------
-docker-compose -p aiaa-orthanc up --remove-orphans  -d
+docker-compose -p aiaa-orthanc up --remove-orphans  #-d
 
 
 for i in {1..6}
