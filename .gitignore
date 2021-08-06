@@ -1,6 +1,8 @@
 .idea
 .ipynb_checkpoints
 
+passwords/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
