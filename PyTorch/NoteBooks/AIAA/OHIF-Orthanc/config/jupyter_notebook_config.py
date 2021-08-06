@@ -284,6 +284,7 @@ c.NotebookApp.base_url = '/notebooks/'
 #  
 #  The string should be of the form type:salt:hashed-password.
 #c.NotebookApp.password = ''
+c.NotebookApp.password = "argon2:$argon2id$v=19$m=10240,t=10,p=8$+ZNNLObum+DHv+kQURbyEQ$ZNGQziogxRW8QYe+OYd2zg"
 
 ## Forces users to use a password for the Notebook server. This is useful in a
 #  multi user environment, for instance when everybody in the LAN can access each
@@ -707,7 +708,7 @@ c.NotebookApp.terminado_settings = {"shell_command": ["/bin/bash"]}
 #    indicating the root path.
 
 ## Allow access to hidden files
-#c.ContentsManager.allow_hidden = False
+c.ContentsManager.allow_hidden = True
 
 ## 
 #c.ContentsManager.checkpoints = None

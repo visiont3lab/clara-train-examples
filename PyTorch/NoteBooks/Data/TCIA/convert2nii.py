@@ -44,72 +44,71 @@ def covertAllSeg2Nifti(df, outputDir,flipAxis):
 
 # moved to fileIO use import
 
-# def covertSeg2Nii(filePath, outputFilePath, lbKeyDic,tmp_path,flipAxis):
-#     print("Converting Seg from Location =", filePath)
-#     # tmp_path = outputFilePath+"/../tmp/"
-#     os.makedirs(tmp_path, exist_ok=True)
-#     runOScmd("rm " + tmp_path + "/*")
-#     sleep(1)
-#     runOScmd("segimage2itkimage -t nii --outputDirectory " + tmp_path + " --inputDICOM " + filePath)
-#     metaFile= tmp_path + "meta.json"
-#     file2IdDic=readSegMetaJson(metaFile,lbKeyDic)
-#     mergeMultipleNiftis(tmp_path, outputFilePath, file2IdDic,flipAxis)
-#
-#
-# def mergeMultipleNiftis(tmp_path, outputFilePath, file2IdDic,flipAxis):
-#     # simple merge by file name doesn't work since labels are continues numbers and can be for different labels
-#     # Need to read the json to know what label is what number
-#     allNP = None
-#     for fileName in file2IdDic:
-#         segment_number = file2IdDic[fileName]
-#         print(fileName, '->', segment_number)
-#         # files = glob.glob(tmp_path+"/*.nii.gz")
-#         # for segment_number,f in enumerate(files):
-#         fPath = tmp_path + "/" + fileName
-#         print("Merging nii files =", fPath)
-#         imgNp, hdr = fileIO.openNifti(fPath)
-#         if allNP is None:
-#             allNP = np.zeros_like(imgNp, dtype=np.uint8)
-#         allNP[imgNp > 0] = segment_number
-#
-#     if "rot" in flipAxis or flipAxis=="all":
-#         allNP = np.swapaxes(allNP , 0,1) # rotate on axial
-#     if "lr" in flipAxis or flipAxis=="all":
-#         allNP = np.flip(allNP, axis=0) #lr
-#     if "ap" in flipAxis or flipAxis=="all":
-#         allNP = np.flip(allNP, axis=1) # ap
-#     if "si" in flipAxis or flipAxis=="all":
-#         allNP = np.flip(allNP, axis=2) # si
-#     print("writing mergeged file as", outputFilePath)
-#
-#     # normal file name
-#     fileIO.writeNifti(allNP, outputFilePath[:outputFilePath.find("_seg_") + 4] + ".nii.gz", hdr.get_base_affine())
-#     # file name with Ser UID appended
-#     fileIO.writeNifti(allNP, outputFilePath, hdr.get_base_affine())
-#     # file after removing 1 slice
-#     fileIO.writeNifti(allNP[:,:,:-1], outputFilePath.replace("_seg","_seg_ShortZ"), hdr.get_base_affine())
+def covertSeg2Nii(filePath, outputFilePath, lbKeyDic,tmp_path,flipAxis):
+    print("Converting Seg from Location =", filePath)
+    # tmp_path = outputFilePath+"/../tmp/"
+    os.makedirs(tmp_path, exist_ok=True)
+    runOScmd("rm " + tmp_path + "/*")
+    sleep(1)
+    runOScmd("segimage2itkimage -t nii --outputDirectory " + tmp_path + " --inputDICOM " + filePath)
+    metaFile= tmp_path + "meta.json"
+    file2IdDic=readSegMetaJson(metaFile,lbKeyDic)
+    mergeMultipleNiftis(tmp_path, outputFilePath, file2IdDic,flipAxis)
+
+def mergeMultipleNiftis(tmp_path, outputFilePath, file2IdDic,flipAxis):
+    # simple merge by file name doesn't work since labels are continues numbers and can be for different labels
+    # Need to read the json to know what label is what number
+    allNP = None
+    for fileName in file2IdDic:
+        segment_number = file2IdDic[fileName]
+        print(fileName, '->', segment_number)
+        # files = glob.glob(tmp_path+"/*.nii.gz")
+        # for segment_number,f in enumerate(files):
+        fPath = tmp_path + "/" + fileName
+        print("Merging nii files =", fPath)
+        imgNp, hdr = fileIO.openNifti(fPath)
+        if allNP is None:
+            allNP = np.zeros_like(imgNp, dtype=np.uint8)
+        allNP[imgNp > 0] = segment_number
+
+    if "rot" in flipAxis or flipAxis=="all":
+        allNP = np.swapaxes(allNP , 0,1) # rotate on axial
+    if "lr" in flipAxis or flipAxis=="all":
+        allNP = np.flip(allNP, axis=0) #lr
+    if "ap" in flipAxis or flipAxis=="all":
+        allNP = np.flip(allNP, axis=1) # ap
+    if "si" in flipAxis or flipAxis=="all":
+        allNP = np.flip(allNP, axis=2) # si
+    print("writing mergeged file as", outputFilePath)
+
+    # normal file name
+    fileIO.writeNifti(allNP, outputFilePath[:outputFilePath.find("_seg_") + 4] + ".nii.gz", hdr.get_base_affine())
+    # file name with Ser UID appended
+    fileIO.writeNifti(allNP, outputFilePath, hdr.get_base_affine())
+    # file after removing 1 slice
+    fileIO.writeNifti(allNP[:,:,:-1], outputFilePath.replace("_seg","_seg_ShortZ"), hdr.get_base_affine())
 
 
-# def readSegMetaJson(filePath, lbKeyDic):
-#     # this function will add to lbkeyDic the is inputed
-#     # will return dic of ids and what label to use for it
-#     ## {2.nii:1, 1.nii:2, 3.nii:4}
-#     with open(filePath) as f:
-#         data = json.load(f)
-#     segmentAttributes = data['segmentAttributes']
-#     file2IdDic = {}
-#     for s in segmentAttributes:
-#         s0 = s[0]
-#         id = str(s0['labelID'])
-#         lbName = s0['SegmentLabel']
-#         lbDesc = s0['SegmentDescription']
-#         fName = id + ".nii.gz"
-#         print("id=", id, " lb Name=", lbName, " lb desc", lbDesc, " file=", fName)
-#         if lbDesc not in lbKeyDic.keys():
-#             lbKeyDic[lbDesc] = id
-#         # key are now already there but could have another id
-#         file2IdDic[ id + ".nii.gz"] = lbKeyDic[lbDesc]
-#     return file2IdDic
+def readSegMetaJson(filePath, lbKeyDic):
+    # this function will add to lbkeyDic the is inputed
+    # will return dic of ids and what label to use for it
+    ## {2.nii:1, 1.nii:2, 3.nii:4}
+    with open(filePath) as f:
+        data = json.load(f)
+    segmentAttributes = data['segmentAttributes']
+    file2IdDic = {}
+    for s in segmentAttributes:
+        s0 = s[0]
+        id = str(s0['labelID'])
+        lbName = s0['SegmentLabel']
+        lbDesc = s0['SegmentDescription']
+        fName = id + ".nii.gz"
+        print("id=", id, " lb Name=", lbName, " lb desc", lbDesc, " file=", fName)
+        if lbDesc not in lbKeyDic.keys():
+            lbKeyDic[lbDesc] = id
+        # key are now already there but could have another id
+        file2IdDic[ id + ".nii.gz"] = lbKeyDic[lbDesc]
+    return file2IdDic
 
 # adjusted from src to return a list
 def extract_dcm_metadata_to_csv(folder: Path, n_jobs, filter_slice=True, filter_series=True):

@@ -49,8 +49,36 @@ Description=Jupyterlab development server
 
 [Service]
 User=ubuntu
-WorkingDirectory=/home/ubuntu/clara-train-examples
+WorkingDirectory=/home/ubuntu/clara-train-examples/PyTorch/NoteBooks/scripts/
 ExecStart=/home/ubuntu/clara-train-examples/PyTorch/NoteBooks/scripts/startup.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+sudo systemctl daemon-reload
+sudo systemctl start jupyterlab.service
+sudo systemctl enable jupyterlab.service
+```
+
+
+
+## Run clara train + ohif + triton
+
+```
+# https://www.shubhamdipt.com/blog/how-to-create-a-systemd-service-in-linux/
+cd /etc/systemd/system
+sudo vim jupyterlab.service
+
+# write inside 
+# note: change user <ubuntu> with your current user
+[Unit]
+Description=Jupyterlab development server
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/clara-train-examples/PyTorch/NoteBooks/AIAA/OHIF-Orthanc
+ExecStart=/home/ubuntu/clara-train-examples/PyTorch/NoteBooks/AIAA/OHIF-Orthanc/restart.sh
 Restart=always
 
 [Install]

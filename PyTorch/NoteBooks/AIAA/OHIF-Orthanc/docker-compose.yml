@@ -10,15 +10,16 @@ services:
     depends_on:
       - tritonserver
     ports:
-      #- "8899:8888" # Jupyter lab port mapped as http://<machinename>:ohifport/notebooks/
-      - "3031:5000" # AIAA port mapped as http://<machinename>:ohifport/aiaa/
+      - "8888:8888" # Jupyter lab port mapped as http://<machinename>:ohifport/notebooks/
+      - "5000:5000" # AIAA port mapped as http://<machinename>:ohifport/aiaa/
     ipc: host
     volumes:
       - ${TRAIN_DEV_DAY_ROOT}:/claraDevDay/
       # certification files
       #- ./nginx/config/nginx-selfsigned.crt:/usr/certs/server.crt:ro
       #- ./nginx/config/nginx-selfsigned.key:/usr/certs/server.key:ro
-    command: "jupyter lab /claraDevDay --ip 0.0.0.0 --allow-root --no-browser --config /claraDevDay/AIAA/OHIF-Orthanc/config/jupyter_notebook_config.py"
+    command: "jupyter lab /claraDevDay --ip 0.0.0.0 --port 8888 --allow-root --no-browser --NotebookApp.token=''  --config  /claraDevDay/AIAA/OHIF-Orthanc/config/jupyter_notebook_config.py"
+
 #############################################################
   tritonserver:
     image: nvcr.io/nvidia/tritonserver:21.02-py3

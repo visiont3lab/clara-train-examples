@@ -20,7 +20,7 @@ services:
     ipc: host
     #network_mode: host
     volumes:
-      - /home/ubuntu/clara-train-examples/PyTorch/NoteBooks:/claraDevDay/
+      - ${TRAIN_DEV_DAY_ROOT}:/claraDevDay/
     command: "jupyter lab /claraDevDay --ip 0.0.0.0 --port 8888 --allow-root --no-browser --NotebookApp.token='' --config /claraDevDay/scripts/jupyter_notebook_config.py"
 #    command: tail -f /dev/null
 #    tty: true
@@ -38,7 +38,7 @@ services:
           --repository-poll-secs=5 \
           --log-verbose ${TRITON_VERBOSE}"
     volumes:
-      - /home/ubuntu/clara-train-examples/PyTorch/NoteBooks/AIAA/workspace/triton_models:/triton_models
+      - ${TRAIN_DEV_DAY_ROOT}/AIAA/workspace/triton_models:/triton_models
 #    shm_size: 1gb
 #    ulimits:
 #      memlock: -1
